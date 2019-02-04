@@ -147,47 +147,11 @@ class OpenLRW(object):
         if self._mail:
             self._mail.sendmail(self._from_mail, self._to_mail, "Subject: " + subject + " \n\n" + message)
 
-    def send_xapi(self, statement):
-        """
-        Send xAPI statements
-        :param statement: JSON Object following the xAPI format
-        :return: response
-        """
-        credentials = base64.b64encode('{}:{}'.format(self._username, self._password).encode())
-        headers = {self._auth_header: 'Basic ' + credentials.decode(), "X-Experience-API-Version": "1.0.0"}
-        response = requests.post(self._url + Routes.XAPI, headers=headers, json=statement)
-        print(Colors.OKBLUE + '[POST]' + Colors.ENDC + ' ' + Routes.XAPI + ' - Response: ' + str(response.status_code))
-        return response
-
-    def send_caliper(self, statement):
-        """
-        Send Caliper statement
-        :param statement: JSON Object following the IMS Caliper format
-        :return: response
-        """
-        response = requests.post(self._url + Routes.CALIPER, headers={"Authorization": self._username}, json=statement)
-        print(Colors.OKBLUE + '[POST]' + Colors.ENDC + ' /key/caliper - Response: ' + str(response.status_code))
-        return response
-
-    def generate_jwt(self):
-        """
-        Create a JSON Web Token
-        :return: a token
-        """
-        headers = {'X-Requested-With': 'XMLHttpRequest'}
-        data = {"username": self._username, "password": self._password}
-        try:
-            r = requests.post(self._url + Routes.AUTH, headers=headers, json=data)
-            print(Colors.OKGREEN + '[GET]' + Colors.ENDC + Routes.USERS + '- Response: ' + str(response.status_code))
-            res = r.json()
-            return res['token']
-        except requests.RequestException:
-            self.mail_server("Unable to get the JWT Token", sys.argv[0] + " was unable to get the token.")
-            sys.exit("Unable to get the JWT Token")
-
     ######################################################
     #                    API CALLS                       #
     ######################################################
+
+    # Users
 
     def post_user(self, jwt, data, check):
         check = 'false' if check is False else 'true'
@@ -209,3 +173,46 @@ class OpenLRW(object):
         response = requests.get(self._url + Routes.USERS, headers={'Authorization': 'Bearer ' + jwt})
         Routes.print_get(Routes.USERS, response)
         return False if response.status_code == 401 else response.content  # if token expired
+
+    # Events
+
+    def send_xapi(self, statement):
+        """
+        Send xAPI statements
+        :param statement: JSON Object following the xAPI format
+        :return: response
+        """
+        credentials = base64.b64encode('{}:{}'.format(self._username, self._password).encode())
+        headers = {self._auth_header: 'Basic ' + credentials.decode(), "X-Experience-API-Version": "1.0.0"}
+        response = requests.post(self._url + Routes.XAPI, headers=headers, json=statement)
+        Routes.print_post(Routes.XAPI, response)
+        return response
+
+    def send_caliper(self, statement):
+        """
+        Send Caliper statement
+        :param statement: JSON Object following the IMS Caliper format
+        :return: response
+        """
+        response = requests.post(self._url + Routes.CALIPER, headers={"Authorization": self._username}, json=statement)
+        Routes.print_post(Routes.CALIPER, response)
+        return response
+
+    # Authentication
+
+    def generate_jwt(self):
+        """
+        Create a JSON Web Token
+        :return: a token
+        """
+        headers = {'X-Requested-With': 'XMLHttpRequest'}
+        data = {"username": self._username, "password": self._password}
+        try:
+            response = requests.post(self._url + Routes.AUTH, headers=headers, json=data)
+            Routes.print_get(Routes.USERS, response)
+            res = response.json()
+            return res['token']
+        except requests.RequestException:
+            self.mail_server("Unable to get the JWT Token", sys.argv[0] + " was unable to get the token.")
+            sys.exit("Unable to get the JWT Token")
+
