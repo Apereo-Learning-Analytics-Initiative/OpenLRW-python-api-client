@@ -13,6 +13,12 @@
 # or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
+__author__ = "Xavier Chopin"
+__copyright__ = "Copyright 2019"
+__license__ = "ECL-2.0"
+__version__ = "1.0.0"
+__email__ = "xavier.chopin@univ-lorraine.fr"
+__status__ = "Production"
 
 from distutils.core import setup
 
@@ -28,7 +34,7 @@ setup(
     description='Client library for Apereo OpenLRW API',
     long_description=readme(),
     keywords='apereo openlrw api client',
-    url='https://github.com/Apereo-Learning-Analytics-Initiative/python-api-client',
+    url='https://github.com/Apereo-Learning-Analytics-Initiative/OpenLRW-python-api-client',
     author='Xavier Chopin',
     author_email='bonjour@xavierchop.in',
     license='ECL-2.0',
