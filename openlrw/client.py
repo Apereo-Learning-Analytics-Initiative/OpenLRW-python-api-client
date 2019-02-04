@@ -201,9 +201,9 @@ class OpenLRW(object):
         return response.status_code != 401  # if token expired
 
     def get_user(self, jwt, user_id):
-        response = requests.delete(self._url + Routes.USERS + '/'+ user_id, headers={'Authorization': 'Bearer ' + jwt})
+        response = requests.delete(self._url + Routes.USERS + '/' + user_id, headers={'Authorization': 'Bearer ' + jwt})
         Routes.print_get(Routes.USERS + '/' + user_id, response)
-        return response.status_code != 401  # if token expired
+        return False if response.status_code == 401 else response.content  # if token expired
 
     def get_users(self, jwt):
         response = requests.get(self._url + Routes.USERS, headers={'Authorization': 'Bearer ' + jwt})
