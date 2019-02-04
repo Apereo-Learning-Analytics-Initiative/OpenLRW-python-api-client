@@ -12,3 +12,10 @@
 # BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
 # or implied. See the License for the specific language governing
 # permissions and limitations under the License.
+
+__author__ = "Xavier Chopin"
+__copyright__ = "Copyright 2019"
+__license__ = "ECL-2.0"
+__version__ = "1.0.0"
+__email__ = "xavier.chopin@univ-lorraine.fr"
+__status__ = "Production"
