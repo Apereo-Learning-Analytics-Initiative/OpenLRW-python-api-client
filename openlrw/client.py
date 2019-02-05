@@ -14,10 +14,12 @@
 # permissions and limitations under the License.
 import smtplib
 import requests
+import json
+import sys
+import base64
 
 from openlrw.routes import Routes
-
-from openlrw.exceptions import Colors
+from openlrw import exceptions
 
 __author__ = "Xavier Chopin"
 __copyright__ = "Copyright 2019"
@@ -26,14 +28,6 @@ __version__ = "1.0.0"
 __email__ = "xavier.chopin@univ-lorraine.fr"
 __status__ = "Production"
 
-import json
-import base64
-import sys
-
-import sys
-import base64
-
-from openlrw import exceptions
 
 try:
     from urllib import request as http
@@ -100,42 +94,38 @@ class OpenLRW(object):
         except ValueError:
             return None
 
-    def _do_request(self, headers, body):
-        try:
-            request = http.Request(self._url, headers=headers, data=json.dumps(body).encode())
-            if self._cafile:
-                response = http.urlopen(request, cafile=self._cafile).read()
-            else:
-                response = http.urlopen(request).read()
-        except Exception as e:
-            raise exceptions.OpenLRWClientException(str(e))
-        return self._parse_response(response)
-
-    def execute(self, method, **kwargs):
+    def _http_get(self, route, jwt):
         """
-        Call remote API procedure
-        :param method: Procedure name
-        :param kwargs: Procedure named arguments
-        :return: Procedure result
-        :raise: urllib2.HTTPError: Any HTTP error (Python 2)
-        :raise: urllib.error.HTTPError: Any HTTP error (Python 3)
+        For OneRoster routes('/api/:route')
+        :param route:
+        :param jwt:
+        :return:
         """
+        response = requests.get(self._url + route, headers={'Authorization': 'Bearer ' + jwt})
+        Routes.print_get(route, response)
+        return False if response.status_code == 401 else response.content  # if token expired
 
-        payload = {
-            'id': 1,
-            'jsonrpc': '2.0',
-            'method': method,
-            'params': kwargs
-        }
+    def _http_post(self, route, jwt, data):
+        """
+        For OneRoster routes('/api/:route')
+        :param route:
+        :param jwt:
+        :return:
+        """
+        response = requests.post(self._url + route, headers={'Authorization': 'Bearer ' + jwt}, json=data)
+        Routes.print_post(route, response)
+        return response.status_code != 401  # if token expired
 
-        credentials = base64.b64encode('{}:{}'.format(self._username, self._password).encode())
-        auth_header_prefix = 'Basic ' if self._auth_header == DEFAULT_AUTH_HEADER else ''
-        headers = {
-            self._auth_header: auth_header_prefix + credentials.decode(),
-            'Content-Type': 'application/json',
-        }
-
-        return self._do_request(headers, payload)
+    def _http_delete(self, route, jwt):
+        """
+        For OneRoster routes('/api/:route')
+        :param route:
+        :param jwt:
+        :return:
+        """
+        response = requests.delete(self._url + route, headers={'Authorization': 'Bearer ' + jwt})
+        Routes.print_delete(route, response)
+        return response.status_code != 401  # if token expired
 
     def mail_server(self, subject, message):
         """
@@ -147,32 +137,26 @@ class OpenLRW(object):
         if self._mail:
             self._mail.sendmail(self._from_mail, self._to_mail, "Subject: " + subject + " \n\n" + message)
 
+
+
     ######################################################
     #                    API CALLS                       #
     ######################################################
 
     # Users
 
-    def post_user(self, jwt, data, check):
+    def post_user(self, data, jwt, check):
         check = 'false' if check is False else 'true'
-        response = requests.post(self._url + Routes.USERS + '?check=' + check, headers={'Authorization': 'Bearer ' + jwt}, json=data)
-        Routes.print_post(Routes.USERS, response)
-        return response.status_code != 401  # if token expired
+        return self._http_post(Routes.USERS + '?check=' + check, jwt, data)
 
-    def delete_user(self, jwt, user_id):
-        response = requests.delete(self._url + Routes.USERS + '/'+ user_id, headers={'Authorization': 'Bearer ' + jwt})
-        Routes.print_delete(Routes.USERS + '/' + user_id , response)
-        return response.status_code != 401  # if token expired
+    def delete_user(self, user_id, jwt):
+        return self._http_delete(self._url + Routes.USERS + '/' + user_id, jwt)
 
-    def get_user(self, jwt, user_id):
-        response = requests.delete(self._url + Routes.USERS + '/' + user_id, headers={'Authorization': 'Bearer ' + jwt})
-        Routes.print_get(Routes.USERS + '/' + user_id, response)
-        return False if response.status_code == 401 else response.content  # if token expired
+    def get_user(self, user_id, jwt):
+        return self._http_get(Routes.USERS + '/' + user_id, jwt)
 
     def get_users(self, jwt):
-        response = requests.get(self._url + Routes.USERS, headers={'Authorization': 'Bearer ' + jwt})
-        Routes.print_get(Routes.USERS, response)
-        return False if response.status_code == 401 else response.content  # if token expired
+        return self._http_get(Routes.USERS, jwt)
 
     # Events
 
@@ -209,7 +193,7 @@ class OpenLRW(object):
         data = {"username": self._username, "password": self._password}
         try:
             response = requests.post(self._url + Routes.AUTH, headers=headers, json=data)
-            Routes.print_get(Routes.USERS, response)
+            Routes.print_post(self._url + Routes.AUTH, response)
             res = response.json()
             return res['token']
         except requests.RequestException:
