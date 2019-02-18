@@ -15,11 +15,9 @@
 import smtplib
 import requests
 import json
-import sys
-import base64
 
 from openlrw.routes import Routes
-from openlrw import exceptions
+
 
 __author__ = "Xavier Chopin"
 __copyright__ = "Copyright 2019"
@@ -37,35 +35,59 @@ except ImportError:
 
 class OneRoster:
 
-    def http_get(self, route, jwt):
+    def __init__(self):
+        pass
+
+    @staticmethod
+    def http_get(route, jwt):
         """
         For OneRoster routes('/api/:route')
         :param route:
         :param jwt:
         :return:
         """
-        response = requests.get(self._url + route, headers={'Authorization': 'Bearer ' + jwt})
+        from openlrw.client import OpenLRW
+        response = requests.get(OpenLRW.URI + route, headers={'Authorization': 'Bearer ' + jwt})
         Routes.print_get(route, response)
         return False if response.status_code == 401 else response.content  # if token expired
 
-    def http_post(self, route, jwt, data):
+    @staticmethod
+    def http_post(route, jwt, data):
         """
         For OneRoster routes('/api/:route')
         :param route:
         :param jwt:
+        :param data
         :return:
         """
-        response = requests.post(self._url + route, headers={'Authorization': 'Bearer ' + jwt}, json=data)
+        from openlrw.client import OpenLRW
+        response = requests.post(OpenLRW.URI + route, headers={'Authorization': 'Bearer ' + jwt}, json=data)
         Routes.print_post(route, response)
         return response.status_code != 401  # if token expired
 
-    def http_delete(self, route, jwt):
+    @staticmethod
+    def http_delete(route, jwt):
         """
         For OneRoster routes('/api/:route')
         :param route:
         :param jwt:
         :return:
         """
-        response = requests.delete(self._url + route, headers={'Authorization': 'Bearer ' + jwt})
+        from openlrw.client import OpenLRW
+        response = requests.delete(OpenLRW.URI + route, headers={'Authorization': 'Bearer ' + jwt})
         Routes.print_delete(route, response)
+        return response.status_code != 401  # if token expired
+
+    @staticmethod
+    def http_patch(route, jwt, data):
+        """
+        For OneRoster routes('/api/:route')
+        :param route:
+        :param jwt:
+        :param data
+        :return:
+        """
+        from openlrw.client import OpenLRW
+        response = requests.patch(OpenLRW.URI + route, headers={'Authorization': 'Bearer ' + jwt}, json=data)
+        Routes.print_post(route, response)
         return response.status_code != 401  # if token expired
