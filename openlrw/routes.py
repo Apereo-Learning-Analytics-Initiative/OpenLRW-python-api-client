@@ -28,7 +28,7 @@ class Routes:
     XAPI = '/xAPI/statements'
     USERS = '/api/users'
     ACADEMIC_SESSIONS = '/api/academicsessions'
-    AUTH = '/api/auth/token'
+    AUTH = '/api/auth/login'
     CALIPER = '/api/caliper'
     CLASSES = '/api/classes'
     COURSES = '/api/courses'
@@ -39,7 +39,7 @@ class Routes:
 
     @staticmethod
     def print_get(route, response):
-        print(Colors.OKGREEN+ '[GET]' + Colors.ENDC + ' ' + route + ' - Response: ' + str(response.status_code))
+        print(Colors.OKGREEN + '[GET]' + Colors.ENDC + ' ' + route + ' - Response: ' + str(response.status_code))
 
     @staticmethod
     def print_post(route, response):
