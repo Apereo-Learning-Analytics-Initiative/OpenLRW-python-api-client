@@ -43,6 +43,8 @@ class OpenLRW(object):
     OpenLRW API Client
     """
 
+    URI = ""
+
     def __init__(self, url, username, password, auth_header=DEFAULT_AUTH_HEADER):
         """
         Constructor
@@ -52,7 +54,7 @@ class OpenLRW(object):
         :param password: API Password
         :param auth_header: API HTTP header
         """
-        self._url = url
+        OpenLRW.URI = url
         self._username = username
         self._password = password
         self._auth_header = auth_header
@@ -115,10 +117,10 @@ class OpenLRW(object):
 
     def post_user(self, data, jwt, check):
         check = 'false' if check is False else 'true'
-        return OneRoster.http_post(Routes.USERS + '?check=' + check, jwt, data)
+        return OneRoster.http_post(Routes.USERS, jwt, data)
 
     def delete_user(self, user_id, jwt):
-        return OneRoster.http_delete(self._url + Routes.USERS + '/' + user_id, jwt)
+        return OneRoster.http_delete(Routes.USERS + '/' + user_id, jwt)
 
     def get_user(self, user_id, jwt):
         return OneRoster.http_get(Routes.USERS + '/' + user_id, jwt)
@@ -127,7 +129,7 @@ class OpenLRW(object):
         return OneRoster.http_get(Routes.USERS, jwt)
 
     def patch_user(self, data, jwt, check):
-        return OneRoster.http_post(Routes.USERS + '?check=' + check, jwt, data)
+        return OneRoster.http_post(Routes.USERS, jwt, data)
 
     # Events
 
@@ -139,7 +141,7 @@ class OpenLRW(object):
         """
         credentials = base64.b64encode('{}:{}'.format(self._username, self._password).encode())
         headers = {self._auth_header: 'Basic ' + credentials.decode(), "X-Experience-API-Version": "1.0.0"}
-        response = requests.post(self._url + Routes.XAPI, headers=headers, json=statement)
+        response = requests.post(self._URI + Routes.XAPI, headers=headers, json=statement)
         Routes.print_post(Routes.XAPI, response)
         return response
 
@@ -149,7 +151,7 @@ class OpenLRW(object):
         :param statement: JSON Object following the IMS Caliper format
         :return: response
         """
-        response = requests.post(self._url + Routes.CALIPER, headers={"Authorization": self._username}, json=statement)
+        response = requests.post(self._URI + Routes.CALIPER, headers={"Authorization": self._username}, json=statement)
         Routes.print_post(Routes.CALIPER, response)
         return response
 
@@ -162,9 +164,10 @@ class OpenLRW(object):
         """
         headers = {'X-Requested-With': 'XMLHttpRequest'}
         data = {"username": self._username, "password": self._password}
+        print(OpenLRW.URI )
         try:
-            response = requests.post(self._url + Routes.AUTH, headers=headers, json=data)
-            Routes.print_post(self._url + Routes.AUTH, response)
+            response = requests.post(OpenLRW.URI + Routes.AUTH, headers=headers, json=data)
+            Routes.print_post(self.URI + Routes.AUTH, response)
             res = response.json()
             return res['token']
         except requests.RequestException:
