@@ -19,3 +19,5 @@ __license__ = "ECL-2.0"
 __version__ = "1.0.0"
 __email__ = "xavier.chopin@univ-lorraine.fr"
 __status__ = "Production"
+
+name = "openlrw"
