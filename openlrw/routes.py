@@ -28,7 +28,7 @@ class Routes:
     XAPI = '/xAPI/statements'
     USERS = '/api/users'
     ACADEMIC_SESSIONS = '/api/academicsessions'
-    AUTH = 'api/auth/token'
+    AUTH = '/api/auth/token'
     CALIPER = '/api/caliper'
     CLASSES = '/api/classes'
     COURSES = '/api/courses'
