@@ -24,7 +24,7 @@ __status__ = "Production"
 import sys
 
 try:
-    import rangex as sizeof
+    import xrange as sizeof
 except ImportError:
     import range as sizeof
 
