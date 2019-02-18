@@ -1,3 +1,5 @@
+# coding=utf-8
+
 # The ECL-2.0 License (ECL-2.0)
 #
 # Copyright (c) 2019 Xavier Chopin Licensed under the
