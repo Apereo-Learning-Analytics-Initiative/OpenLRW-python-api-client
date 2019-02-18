@@ -18,6 +18,7 @@ import json
 import sys
 import base64
 
+from openlrw.oneroster import OneRoster
 from openlrw.routes import Routes
 from openlrw import exceptions
 
@@ -94,39 +95,6 @@ class OpenLRW(object):
         except ValueError:
             return None
 
-    def _http_get(self, route, jwt):
-        """
-        For OneRoster routes('/api/:route')
-        :param route:
-        :param jwt:
-        :return:
-        """
-        response = requests.get(self._url + route, headers={'Authorization': 'Bearer ' + jwt})
-        Routes.print_get(route, response)
-        return False if response.status_code == 401 else response.content  # if token expired
-
-    def _http_post(self, route, jwt, data):
-        """
-        For OneRoster routes('/api/:route')
-        :param route:
-        :param jwt:
-        :return:
-        """
-        response = requests.post(self._url + route, headers={'Authorization': 'Bearer ' + jwt}, json=data)
-        Routes.print_post(route, response)
-        return response.status_code != 401  # if token expired
-
-    def _http_delete(self, route, jwt):
-        """
-        For OneRoster routes('/api/:route')
-        :param route:
-        :param jwt:
-        :return:
-        """
-        response = requests.delete(self._url + route, headers={'Authorization': 'Bearer ' + jwt})
-        Routes.print_delete(route, response)
-        return response.status_code != 401  # if token expired
-
     def mail_server(self, subject, message):
         """
         Send an email
@@ -147,16 +115,19 @@ class OpenLRW(object):
 
     def post_user(self, data, jwt, check):
         check = 'false' if check is False else 'true'
-        return self._http_post(Routes.USERS + '?check=' + check, jwt, data)
+        return OneRoster.http_post(Routes.USERS + '?check=' + check, jwt, data)
 
     def delete_user(self, user_id, jwt):
-        return self._http_delete(self._url + Routes.USERS + '/' + user_id, jwt)
+        return OneRoster.http_delete(self._url + Routes.USERS + '/' + user_id, jwt)
 
     def get_user(self, user_id, jwt):
-        return self._http_get(Routes.USERS + '/' + user_id, jwt)
+        return OneRoster.http_get(Routes.USERS + '/' + user_id, jwt)
 
     def get_users(self, jwt):
-        return self._http_get(Routes.USERS, jwt)
+        return OneRoster.http_get(Routes.USERS, jwt)
+
+    def patch_user(self, data, jwt, check):
+        return OneRoster.http_post(Routes.USERS + '?check=' + check, jwt, data)
 
     # Events
 
