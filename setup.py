@@ -20,6 +20,7 @@ __version__ = "1.0.0"
 __email__ = "xavier.chopin@univ-lorraine.fr"
 __status__ = "Production"
 
+import setuptools
 from distutils.core import setup
 
 
@@ -39,7 +40,7 @@ setup(
     author_email='bonjour@xavierchop.in',
     license='ECL-2.0',
     packages=['openlrw'],
-    classifiers=(
+    classifiers=[
         'Intended Audience :: Developers',
         'Intended Audience :: Information Technology',
         'Intended Audience :: Education',
@@ -50,5 +51,5 @@ setup(
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
-    ), requires=['requests']
+    ], requires=['requests']
 )
