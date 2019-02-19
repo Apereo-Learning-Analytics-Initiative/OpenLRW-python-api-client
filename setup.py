@@ -45,7 +45,6 @@ setup(
         'Intended Audience :: Information Technology',
         'Intended Audience :: Education',
         'Natural Language :: English',
-        'License :: OSI Approved :: ECL-2.0 License',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.4',
