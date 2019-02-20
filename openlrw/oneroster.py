@@ -15,7 +15,10 @@
 import smtplib
 import requests
 import json
+import sys
+import base64
 
+from openlrw.exceptions import ExpiredTokenException, NotFoundException
 from openlrw.routes import Routes
 
 
@@ -49,7 +52,13 @@ class OneRoster:
         from openlrw.client import OpenLRW
         response = requests.get(OpenLRW.URI + route, headers={'Authorization': 'Bearer ' + jwt})
         Routes.print_get(route, response)
-        return False if response.status_code == 401 else response.content  # if token expired
+
+        if response.status_code == 401:
+            raise ExpiredTokenException
+        elif response.status_code == 404:
+            return None
+
+        return response.content
 
     @staticmethod
     def http_post(route, jwt, data):
