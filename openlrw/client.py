@@ -117,7 +117,7 @@ class OpenLRW(object):
 
     def post_user(self, data, jwt, check):
         check = 'false' if check is False else 'true'
-        return OneRoster.http_post(Routes.USERS, jwt, data)
+        return OneRoster.http_post(Routes.USERS + '?check=' + check, jwt, data)
 
     def delete_user(self, user_id, jwt):
         return OneRoster.http_delete(Routes.USERS + '/' + user_id, jwt)
@@ -128,8 +128,8 @@ class OpenLRW(object):
     def get_users(self, jwt):
         return OneRoster.http_get(Routes.USERS, jwt)
 
-    def patch_user(self, data, jwt, check):
-        return OneRoster.http_post(Routes.USERS, jwt, data)
+    def patch_user(self, user_id, data, jwt):
+        return OneRoster.http_patch(Routes.USERS + '/' + user_id, jwt, data)
 
     # Events
 
@@ -157,6 +157,7 @@ class OpenLRW(object):
 
     # Authentication
 
+
     def generate_jwt(self):
         """
         Create a JSON Web Token
@@ -164,7 +165,7 @@ class OpenLRW(object):
         """
         headers = {'X-Requested-With': 'XMLHttpRequest'}
         data = {"username": self._username, "password": self._password}
-        print(OpenLRW.URI )
+        print(OpenLRW.URI)
         try:
             response = requests.post(OpenLRW.URI + Routes.AUTH, headers=headers, json=data)
             Routes.print_post(self.URI + Routes.AUTH, response)
