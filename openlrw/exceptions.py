@@ -1,5 +1,4 @@
 # coding=utf-8
-
 # The ECL-2.0 License (ECL-2.0)
 #
 # Copyright (c) 2019 Xavier Chopin Licensed under the
@@ -14,6 +13,8 @@
 # BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
 # or implied. See the License for the specific language governing
 # permissions and limitations under the License.
+
+
 
 
 __author__ = "Xavier Chopin"
@@ -72,7 +73,7 @@ class OpenLRWClientException(Exception):
                     second_half_message = first_half_message
                     if number % 2 != 0:
                         second_half_message = first_half_message + " "
-                message_line += "│" + first_half_message + msg + second_half_message + '│'
+                message_line += "│" + first_half_message + msg + second_half_message + "│"
                 if i is not len(message) - 1:
                     message_line += '\n'
         else:
@@ -143,3 +144,11 @@ class OpenLRWClientException(Exception):
     """ + message_line + """
     ╰────────────────────────────────────────────────────────────────────────────────╯
             """)
+
+
+class NotFoundException(Exception):
+    pass
+
+
+class ExpiredTokenException(Exception):
+    pass
