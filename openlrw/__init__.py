@@ -16,7 +16,7 @@
 __author__ = "Xavier Chopin"
 __copyright__ = "Copyright 2019"
 __license__ = "ECL-2.0"
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 __email__ = "xavier.chopin@univ-lorraine.fr"
 __status__ = "Production"
 
