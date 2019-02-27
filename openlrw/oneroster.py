@@ -12,11 +12,7 @@
 # BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
 # or implied. See the License for the specific language governing
 # permissions and limitations under the License.
-import smtplib
 import requests
-import json
-import sys
-import base64
 
 from openlrw.exceptions import ExpiredTokenException, NotFoundException
 from openlrw.routes import Routes
@@ -25,7 +21,7 @@ from openlrw.routes import Routes
 __author__ = "Xavier Chopin"
 __copyright__ = "Copyright 2019"
 __license__ = "ECL-2.0"
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 __email__ = "xavier.chopin@univ-lorraine.fr"
 __status__ = "Production"
 
@@ -98,5 +94,5 @@ class OneRoster:
         """
         from openlrw.client import OpenLRW
         response = requests.patch(OpenLRW.URI + route, headers={'Authorization': 'Bearer ' + jwt}, json=data)
-        Routes.print_post(route, response)
+        Routes.print_patch(route, response)
         return response.status_code != 401  # if token expired
