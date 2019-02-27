@@ -17,11 +17,11 @@
 __author__ = "Xavier Chopin"
 __copyright__ = "Copyright 2019"
 __license__ = "ECL-2.0"
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 __email__ = "xavier.chopin@univ-lorraine.fr"
 __status__ = "Production"
 
-from openlrw.exceptions import Colors
+from openlrw.client import Colors
 
 
 class Routes:
@@ -29,7 +29,6 @@ class Routes:
     USERS = '/api/users'
     ACADEMIC_SESSIONS = '/api/academicsessions'
     AUTH = '/api/auth/login'
-    CALIPER = '/api/caliper'
     CLASSES = '/api/classes'
     COURSES = '/api/courses'
     ENROLLMENTS = '/api/enrollments'
@@ -49,5 +48,6 @@ class Routes:
     def print_delete(route, response):
         print(Colors.FAIL + '[DELETE]' + Colors.ENDC + ' ' + route + ' - Response: ' + str(response.status_code))
 
-
-
+    @staticmethod
+    def print_patch(route, response):
+        print(Colors.WARNING + '[PATCH]' + Colors.ENDC + ' ' + route + ' - Response: ' + str(response.status_code))
