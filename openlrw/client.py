@@ -25,17 +25,19 @@ from openlrw import exceptions
 __author__ = "Xavier Chopin"
 __copyright__ = "Copyright 2019"
 __license__ = "ECL-2.0"
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 __email__ = "xavier.chopin@univ-lorraine.fr"
 __status__ = "Production"
-
 
 try:
     from urllib import request as http
 except ImportError:
     import urllib2 as http
 
-DEFAULT_AUTH_HEADER = 'Authorization'
+try:
+    import xrange as sizeof
+except ImportError:
+    import range as sizeof
 
 
 class OpenLRW(object):
@@ -45,7 +47,7 @@ class OpenLRW(object):
 
     URI = ""
 
-    def __init__(self, url, username, password, auth_header=DEFAULT_AUTH_HEADER):
+    def __init__(self, url, username, password):
         """
         Constructor
 
@@ -57,7 +59,6 @@ class OpenLRW(object):
         OpenLRW.URI = url
         self._username = username
         self._password = password
-        self._auth_header = auth_header
         self._mail = None
         self._from_mail = None
         self._to_mail = None
@@ -113,8 +114,6 @@ class OpenLRW(object):
     #                    API CALLS                       #
     ######################################################
 
-    # Users
-
     def post_user(self, data, jwt, check):
         check = 'false' if check is False else 'true'
         return OneRoster.http_post(Routes.USERS + '?check=' + check, jwt, data)
@@ -130,6 +129,31 @@ class OpenLRW(object):
 
     def patch_user(self, user_id, data, jwt):
         return OneRoster.http_patch(Routes.USERS + '/' + user_id, jwt, data)
+
+    def get_lineitem(self, id, jwt):
+        return OneRoster.http_get(Routes.LINE_ITEMS + '/' + id, jwt)
+
+    def get_lineitems(self, jwt):
+        return OneRoster.http_get(Routes.LINE_ITEMS, jwt)
+
+    def post_lineitem(self, data, jwt, check):
+        check = 'false' if check is False else 'true'
+        return OneRoster.http_post(Routes.LINE_ITEMS + '?check=' + check, jwt, data)
+
+    def post_result_for_a_class(self, class_id, data, jwt, check):
+        check = 'false' if check is False else 'true'
+        route = Routes.CLASSES + '/' + str(class_id) + '/results?check=' + check
+        return OneRoster.http_post(route, jwt, data)
+
+    def post_enrollment(self, class_id, data, jwt, check):
+        check = 'false' if check is False else 'true'
+        route = Routes.CLASSES + '/' + str(class_id) + '/enrollments?check=' + check
+        return OneRoster.http_post(route, jwt, data)
+
+    def post_class(self, data, jwt, check):
+        check = 'false' if check is False else 'true'
+        return OneRoster.http_post(Routes.CLASSES + '?check=' + check, jwt, data)
+
 
     # Events
 
@@ -151,12 +175,13 @@ class OpenLRW(object):
         :param statement: JSON Object following the IMS Caliper format
         :return: response
         """
-        response = requests.post(self._URI + Routes.CALIPER, headers={"Authorization": self._username}, json=statement)
-        Routes.print_post(Routes.CALIPER, response)
+        response = requests.post(self._URI + Routes.KEY_CALIPER, headers={"Authorization": self._username}, json=statement)
+        Routes.print_post(Routes.KEY_CALIPER, response)
         return response
 
-    # Authentication
 
+
+    # Authentication
 
     def generate_jwt(self):
         """
@@ -175,3 +200,116 @@ class OpenLRW(object):
             self.mail_server("Unable to get the JWT Token", sys.argv[0] + " was unable to get the token.")
             sys.exit("Unable to get the JWT Token")
 
+################################################################################################
+    @staticmethod
+    def pretty_error(reason, message):
+        length = 80
+        first_half_reason = ""
+        second_half_reason = ""
+        first_half_message = ""
+        second_half_message = ""
+
+        if length - len(reason) >= 0:
+            number = length - len(reason)
+            for i in sizeof(0, number / 2):
+                first_half_reason += " "
+            second_half_reason = first_half_reason
+            if number % 2 != 0:
+                second_half_reason = first_half_reason + " "
+        reason = first_half_reason + Colors.WARNING + reason + Colors.ENDC + second_half_reason
+        if isinstance(message, list):
+            message_line = ''
+            for i in sizeof(0, len(message)):
+                msg = message[i]
+                if length - len(msg) >= 0:
+                    number = length - len(msg)
+                    for j in sizeof(0, number / 2):
+                        first_half_message += " "
+                    second_half_message = first_half_message
+                    if number % 2 != 0:
+                        second_half_message = first_half_message + " "
+                message_line += "│" + first_half_message + msg + second_half_message + "│"
+                if i is not len(message) - 1:
+                    message_line += '\n'
+        else:
+            if length - len(message) >= 0:
+                number = length - len(message)
+                for i in sizeof(0, number / 2):
+                    first_half_message += " "
+                second_half_message = first_half_message
+                if number % 2 != 0:
+                    second_half_message = first_half_message + " "
+            message_line = "│" + first_half_message + message + second_half_message + "│"
+
+        print("""
+    ╭────────────────────────────────────────────────────────────────────────────────╮ 
+    │      OpenLRW client       │               \033[31mERROR MESSAGE\033[0m                  ░▒▓▓▓▓│ 
+    ├────────────────────────────────────────────────────────────────────────────────│ 
+    │""" + reason + """│  
+    """ + message_line + """
+    ╰────────────────────────────────────────────────────────────────────────────────╯
+            """)
+        sys.exit(1)
+
+    @staticmethod
+    def pretty_message(reason, message):
+        length = 80
+        first_half_reason = ""
+        second_half_reason = ""
+        first_half_message = ""
+        second_half_message = ""
+
+        if length - len(reason) >= 0:
+            number = length - len(reason)
+            for i in sizeof(0, number / 2):
+                first_half_reason += " "
+            second_half_reason = first_half_reason
+            if number % 2 != 0:
+                second_half_reason = first_half_reason + " "
+        reason = first_half_reason + Colors.WARNING + reason + Colors.ENDC + second_half_reason
+        if isinstance(message, list):
+            message_line = ''
+            for i in range(0, len(message)):
+                msg = message[i]
+                if length - len(msg) >= 0:
+                    number = length - len(msg)
+                    for j in sizeof(0, number / 2):
+                        first_half_message += " "
+                    second_half_message = first_half_message
+                    if number % 2 != 0:
+                        second_half_message = first_half_message + " "
+                message_line += "│" + first_half_message + msg + second_half_message + '│'
+                if i is not len(message) - 1:
+                    message_line += '\n'
+        else:
+            if length - len(message) >= 0:
+                number = length - len(message)
+                for i in sizeof(0, number / 2):
+                    first_half_message += " "
+                second_half_message = first_half_message
+                if number % 2 != 0:
+                    second_half_message = first_half_message + " "
+            message_line = "│" + first_half_message + message + second_half_message + "│"
+
+        print("""
+    ╭────────────────────────────────────────────────────────────────────────────────╮ 
+    │        OpenLRW client         │                  """ + Colors.OKBLUE + """INFO\033[0m                    ░▒▓▓▓▓│ 
+    ├────────────────────────────────────────────────────────────────────────────────│ 
+    │""" + reason + """│  
+    """ + message_line + """
+    ╰────────────────────────────────────────────────────────────────────────────────╯
+            """)
+
+
+class Colors:
+    def __init__(self):
+        pass
+
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
