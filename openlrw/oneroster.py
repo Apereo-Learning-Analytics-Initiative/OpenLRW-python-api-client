@@ -14,7 +14,7 @@
 # permissions and limitations under the License.
 import requests
 
-from openlrw.exceptions import ExpiredTokenException, NotFoundException
+from openlrw.exceptions import ExpiredTokenException
 from openlrw.routes import Routes
 
 
@@ -68,7 +68,11 @@ class OneRoster:
         from openlrw.client import OpenLRW
         response = requests.post(OpenLRW.URI + route, headers={'Authorization': 'Bearer ' + jwt}, json=data)
         Routes.print_post(route, response)
-        return response.status_code != 401  # if token expired
+
+        if response.status_code == 401:
+            raise ExpiredTokenException
+
+        return response.status_code
 
     @staticmethod
     def http_delete(route, jwt):
@@ -81,7 +85,10 @@ class OneRoster:
         from openlrw.client import OpenLRW
         response = requests.delete(OpenLRW.URI + route, headers={'Authorization': 'Bearer ' + jwt})
         Routes.print_delete(route, response)
-        return response.status_code != 401  # if token expired
+        if response.status_code == 401:
+            raise ExpiredTokenException
+
+        return True
 
     @staticmethod
     def http_patch(route, jwt, data):
@@ -95,4 +102,7 @@ class OneRoster:
         from openlrw.client import OpenLRW
         response = requests.patch(OpenLRW.URI + route, headers={'Authorization': 'Bearer ' + jwt}, json=data)
         Routes.print_patch(route, response)
-        return response.status_code != 401  # if token expired
+        if response.status_code == 401:
+            raise ExpiredTokenException
+
+        return response
