@@ -1,3 +1,5 @@
+# coding=utf-8
+
 # The ECL-2.0 License (ECL-2.0)
 #
 # Copyright (c) 2019 Xavier Chopin Licensed under the
@@ -21,6 +23,7 @@ import base64
 from openlrw.oneroster import OneRoster
 from openlrw.routes import Routes
 from openlrw import exceptions
+from openlrw.routes import Colors
 
 __author__ = "Xavier Chopin"
 __copyright__ = "Copyright 2019"
@@ -35,9 +38,9 @@ except ImportError:
     import urllib2 as http
 
 try:
-    import xrange as sizeof
-except ImportError:
-    import range as sizeof
+    xrange
+except NameError:
+    xrange = range
 
 
 class OpenLRW(object):
@@ -179,8 +182,6 @@ class OpenLRW(object):
         Routes.print_post(Routes.KEY_CALIPER, response)
         return response
 
-
-
     # Authentication
 
     def generate_jwt(self):
@@ -200,7 +201,8 @@ class OpenLRW(object):
             self.mail_server("Unable to get the JWT Token", sys.argv[0] + " was unable to get the token.")
             sys.exit("Unable to get the JWT Token")
 
-################################################################################################
+    ######################################
+
     @staticmethod
     def pretty_error(reason, message):
         length = 80
@@ -211,7 +213,7 @@ class OpenLRW(object):
 
         if length - len(reason) >= 0:
             number = length - len(reason)
-            for i in sizeof(0, number / 2):
+            for i in range(0, number / 2):
                 first_half_reason += " "
             second_half_reason = first_half_reason
             if number % 2 != 0:
@@ -219,11 +221,11 @@ class OpenLRW(object):
         reason = first_half_reason + Colors.WARNING + reason + Colors.ENDC + second_half_reason
         if isinstance(message, list):
             message_line = ''
-            for i in sizeof(0, len(message)):
+            for i in range(0, len(message)):
                 msg = message[i]
                 if length - len(msg) >= 0:
                     number = length - len(msg)
-                    for j in sizeof(0, number / 2):
+                    for j in range(0, number / 2):
                         first_half_message += " "
                     second_half_message = first_half_message
                     if number % 2 != 0:
@@ -234,7 +236,7 @@ class OpenLRW(object):
         else:
             if length - len(message) >= 0:
                 number = length - len(message)
-                for i in sizeof(0, number / 2):
+                for i in range(0, number / 2):
                     first_half_message += " "
                 second_half_message = first_half_message
                 if number % 2 != 0:
@@ -261,7 +263,7 @@ class OpenLRW(object):
 
         if length - len(reason) >= 0:
             number = length - len(reason)
-            for i in sizeof(0, number / 2):
+            for i in range(0, number / 2):
                 first_half_reason += " "
             second_half_reason = first_half_reason
             if number % 2 != 0:
@@ -273,7 +275,7 @@ class OpenLRW(object):
                 msg = message[i]
                 if length - len(msg) >= 0:
                     number = length - len(msg)
-                    for j in sizeof(0, number / 2):
+                    for j in range(0, number / 2):
                         first_half_message += " "
                     second_half_message = first_half_message
                     if number % 2 != 0:
@@ -284,7 +286,7 @@ class OpenLRW(object):
         else:
             if length - len(message) >= 0:
                 number = length - len(message)
-                for i in sizeof(0, number / 2):
+                for i in range(0, number / 2):
                     first_half_message += " "
                 second_half_message = first_half_message
                 if number % 2 != 0:
@@ -299,17 +301,3 @@ class OpenLRW(object):
     """ + message_line + """
     ╰────────────────────────────────────────────────────────────────────────────────╯
             """)
-
-
-class Colors:
-    def __init__(self):
-        pass
-
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
