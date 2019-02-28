@@ -1,11 +1,12 @@
 # OpenLRW Python API Client
-<p align="center">
-  <a href="https://badge.fury.io/py/openlrw"><img src="https://badge.fury.io/py/openlrw.svg" alt="PyPI version" height="18"></a>
-</p>
+
 
 > A Python Client making your scripts for OpenLRW easier
 
-
+<p align="center">
+  <a href='https://www.python.org/dev/peps/pep-0008/'><img src="https://img.shields.io/badge/code%20style-pep8-orange.svg" alt="code style pep 8"></a>
+  <a href="https://badge.fury.io/py/openlrw"><img src="https://badge.fury.io/py/openlrw.svg" alt="PyPI version"></a>
+</p>
 
 ## Getting Started
 ` pip install openlrw `
@@ -27,14 +28,12 @@ try:
   user = OpenLrw.get_user('john_doe', jwt)
 except ExpiredTokenException:
   OpenLRW.pretty_error("Error, "JWT Expired")
-  # Do something...
 
 # 2. Get all the users
 try: 
   users = OpenLrw.get_users(jwt)
 except ExpiredTokenException:
-  print("JWT Expired")
-  # Do something...
+  OpenLRW.pretty_error("Error, "JWT Expired")
   
   
   
