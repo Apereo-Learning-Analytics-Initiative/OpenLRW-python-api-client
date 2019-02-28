@@ -21,10 +21,11 @@ __version__ = "1.0.1"
 __email__ = "xavier.chopin@univ-lorraine.fr"
 __status__ = "Production"
 
-from openlrw.client import Colors
-
 
 class Routes:
+    def __init__(self):
+        pass
+
     XAPI = '/xAPI/statements'
     USERS = '/api/users'
     ACADEMIC_SESSIONS = '/api/academicsessions'
@@ -46,8 +47,22 @@ class Routes:
 
     @staticmethod
     def print_delete(route, response):
-        print(Colors.FAIL + '[DELETE]' + Colors.ENDC + ' ' + route + ' - Response: ' + str(response.status_code))
+        print(Colors.RED + '[DELETE]' + Colors.ENDC + ' ' + route + ' - Response: ' + str(response.status_code))
 
     @staticmethod
     def print_patch(route, response):
         print(Colors.WARNING + '[PATCH]' + Colors.ENDC + ' ' + route + ' - Response: ' + str(response.status_code))
+
+
+class Colors:
+    def __init__(self):
+        pass
+
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    RED = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
