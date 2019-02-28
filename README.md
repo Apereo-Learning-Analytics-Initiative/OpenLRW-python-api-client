@@ -1,4 +1,8 @@
 # OpenLRW Python API Client
+<p align="center">
+  <a href="https://badge.fury.io/py/openlrw"><img src="https://badge.fury.io/py/openlrw.svg" alt="PyPI version" height="18"></a>
+</p>
+
 > A Python Client making your scripts for OpenLRW easier
 
 
