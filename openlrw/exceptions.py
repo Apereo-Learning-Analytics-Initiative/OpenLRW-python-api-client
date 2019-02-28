@@ -26,10 +26,10 @@ class OpenLRWClientException(Exception):
     pass
 
 
-class NotFoundException(Exception):
+class NotFoundException(OpenLRWClientException):
     pass
 
 
-class ExpiredTokenException(Exception):
+class ExpiredTokenException(OpenLRWClientException):
     pass
 
