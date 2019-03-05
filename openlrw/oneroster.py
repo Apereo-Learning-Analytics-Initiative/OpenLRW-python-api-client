@@ -14,22 +14,16 @@
 # permissions and limitations under the License.
 import requests
 
-from openlrw.exceptions import ExpiredTokenException
+from openlrw.exceptions import *
 from openlrw.routes import Routes
 
 
 __author__ = "Xavier Chopin"
 __copyright__ = "Copyright 2019"
 __license__ = "ECL-2.0"
-__version__ = "1.0.1"
+__version__ = "1.0.0"
 __email__ = "xavier.chopin@univ-lorraine.fr"
 __status__ = "Production"
-
-
-try:
-    from urllib import request as http
-except ImportError:
-    import urllib2 as http
 
 
 class OneRoster:
@@ -46,7 +40,7 @@ class OneRoster:
         :return:
         """
         from openlrw.client import OpenLRW
-        response = requests.get(OpenLRW.URI + route, headers={'Authorization': 'Bearer ' + jwt})
+        response = requests.get(str(OpenLRW.URI + route), headers={'X-Requested-With': 'XMLHttpRequest', 'Authorization': 'Bearer ' + str(jwt)})
         Routes.print_get(route, response)
 
         if response.status_code == 401:
@@ -66,13 +60,17 @@ class OneRoster:
         :return:
         """
         from openlrw.client import OpenLRW
-        response = requests.post(OpenLRW.URI + route, headers={'Authorization': 'Bearer ' + jwt}, json=data)
+        response = requests.post(str(OpenLRW.URI + route), headers={'X-Requested-With': 'XMLHttpRequest', 'Authorization': 'Bearer ' + str(jwt)}, json=data)
         Routes.print_post(route, response)
 
         if response.status_code == 401:
             raise ExpiredTokenException
+        elif response.status_code == 400:
+            raise BadRequestException(response)
+        elif response.status_code == 500:
+            raise InternalServerErrorException(response)
 
-        return response.status_code
+        return response
 
     @staticmethod
     def http_delete(route, jwt):
@@ -83,10 +81,12 @@ class OneRoster:
         :return:
         """
         from openlrw.client import OpenLRW
-        response = requests.delete(OpenLRW.URI + route, headers={'Authorization': 'Bearer ' + jwt})
+        response = requests.delete(str(OpenLRW.URI + route), headers={'X-Requested-With': 'XMLHttpRequest', 'Authorization': 'Bearer ' + str(jwt)})
         Routes.print_delete(route, response)
         if response.status_code == 401:
-            raise ExpiredTokenException
+            raise ExpiredTokenException(response)
+        elif response.status_code == 500:
+            raise InternalServerErrorException(response)
 
         return True
 
@@ -100,9 +100,13 @@ class OneRoster:
         :return:
         """
         from openlrw.client import OpenLRW
-        response = requests.patch(OpenLRW.URI + route, headers={'Authorization': 'Bearer ' + jwt}, json=data)
+        response = requests.patch(str(OpenLRW.URI + route), headers={'X-Requested-With': 'XMLHttpRequest', 'Authorization': 'Bearer ' + str(jwt)}, json=data)
         Routes.print_patch(route, response)
         if response.status_code == 401:
             raise ExpiredTokenException
+        elif response.status_code == 400:
+            raise BadRequestException(response)
+        elif response.status_code == 500:
+            raise InternalServerErrorException(response)
 
         return response
