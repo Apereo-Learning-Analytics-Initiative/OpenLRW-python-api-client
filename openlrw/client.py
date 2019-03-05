@@ -21,21 +21,15 @@ import sys
 import base64
 
 from openlrw.oneroster import OneRoster
-from openlrw.routes import Routes
-from openlrw import exceptions
-from openlrw.routes import Colors
+from openlrw.exceptions import *
+from openlrw.routes import *
 
 __author__ = "Xavier Chopin"
 __copyright__ = "Copyright 2019"
 __license__ = "ECL-2.0"
-__version__ = "1.0.1"
+__version__ = "1.0.0"
 __email__ = "xavier.chopin@univ-lorraine.fr"
 __status__ = "Production"
-
-try:
-    from urllib import request as http
-except ImportError:
-    import urllib2 as http
 
 try:
     xrange
@@ -88,19 +82,6 @@ class OpenLRW(object):
         components = snake_str.split('_')
         return components[0] + ''.join(x.title() for x in components[1:])
 
-    @staticmethod
-    def _parse_response(response):
-        try:
-            body = json.loads(response.decode(errors='ignore'))
-
-            if 'error' in body:
-                message = body.get('error').get('message')
-                raise exceptions.OpenLRWClientException(message)
-
-            return body.get('result')
-        except ValueError:
-            return None
-
     def mail_server(self, subject, message):
         """
         Send an email
@@ -110,8 +91,6 @@ class OpenLRW(object):
         """
         if self._mail:
             self._mail.sendmail(self._from_mail, self._to_mail, "Subject: " + subject + " \n\n" + message)
-
-
 
     ######################################################
     #                    API CALLS                       #
@@ -143,6 +122,11 @@ class OpenLRW(object):
         check = 'false' if check is False else 'true'
         return OneRoster.http_post(Routes.LINE_ITEMS + '?check=' + check, jwt, data)
 
+    def post_lineitem_for_a_class(self, class_id, data, jwt, check):
+        check = 'false' if check is False else 'true'
+        route = Routes.CLASSES + '/' + str(class_id) + '/lineitems?check=' + check
+        return OneRoster.http_post(route, jwt, data)
+
     def post_result_for_a_class(self, class_id, data, jwt, check):
         check = 'false' if check is False else 'true'
         route = Routes.CLASSES + '/' + str(class_id) + '/results?check=' + check
@@ -166,10 +150,16 @@ class OpenLRW(object):
         :param statement: JSON Object following the xAPI format
         :return: response
         """
+        route = str(OpenLRW.URI) + str(Routes.XAPI)
         credentials = base64.b64encode('{}:{}'.format(self._username, self._password).encode())
         headers = {self._auth_header: 'Basic ' + credentials.decode(), "X-Experience-API-Version": "1.0.0"}
-        response = requests.post(self._URI + Routes.XAPI, headers=headers, json=statement)
-        Routes.print_post(Routes.XAPI, response)
+        response = requests.post(route, headers=headers, json=statement)
+        Routes.print_post(route, response)
+        if response.status_code == 400:
+            raise BadRequestException(response)
+        elif response.status_code == 500:
+            raise InternalServerErrorException(response)
+
         return response
 
     def send_caliper(self, statement):
@@ -178,8 +168,16 @@ class OpenLRW(object):
         :param statement: JSON Object following the IMS Caliper format
         :return: response
         """
-        response = requests.post(self._URI + Routes.KEY_CALIPER, headers={"Authorization": self._username}, json=statement)
-        Routes.print_post(Routes.KEY_CALIPER, response)
+        route = str(OpenLRW.URI) + str(Routes.KEY_CALIPER)
+        response = requests.post(route, headers={"Authorization": self._username}, json=statement)
+        Routes.print_post(route, response)
+        if response.status_code == 400:
+            raise BadRequestException(response)
+        elif response.status_code == 500:
+            raise InternalServerErrorException(response)
+        elif response.status_code == 404:
+            raise OpenLRWClientException("Invalid Key")
+
         return response
 
     # Authentication
