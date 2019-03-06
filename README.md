@@ -13,29 +13,83 @@
 
 ## Usage
 
-#### 1. Interacting with the User collection
+#### Some examples of what you can do
 
 ```python
 
 from openlrw.client import OpenLRW
 from openlrw.exceptions import ExpiredTokenException
 
-OpenLrw = OpenLRW(uri, username, password) # Create an instance of the client
-jwt = OpenLrw.generate_jwt() # Generate a JSON Web Token for using OneRoster routes
+# 1. Settings
+openlrw = OpenLRW(uri, username, password) # Create an instance of the client
 
-# 1. Get the user john_doe
+openlrw.setup_email('localhost', 'script@openlrw.dev', 'your_email@domain.com') # Allows you to send emails
+
+# 2. Authentication
+jwt = openlrw.generate_jwt() # Generate a JSON Web Token for using OneRoster routes
+
+# 3. Users
 try: 
-  user = OpenLrw.get_user('john_doe', jwt)
+  user = openlrw.get_user(user_id, jwt) # One user
+  users = openlrw.get_users(jwt) # All the users
+  new_user_res = openlrw.post_user(json, jwt, True) # Creates a user
+  patch_user_res = openlrw.patch_user(user_id, json, jwt)
+  delete_user_res = openlrw.delete_user(user_id, jwt)
 except ExpiredTokenException:
-  OpenLRW.pretty_error("Error, "JWT Expired")
+  OpenLRW.pretty_error("Error", "JWT Expired")
 
-# 2. Get all the users
+
+# 4. Line items
 try: 
-  users = OpenLrw.get_users(jwt)
+    line_item = openlrw.get_lineitem("lineItemId", jwt)
+    line_items = openlrw.get_lineitems(jwt)
+    openlrw.post_lineitem_for_a_class("classId", json, jwt, True)
+    openlrw.post_lineitem(json, jwt, True)
 except ExpiredTokenException:
-  OpenLRW.pretty_error("Error, "JWT Expired")
-  
-  
-  
+  OpenLRW.pretty_error("Error", "JWT Expired")
+except InternalServerErrorException as e:
+    script_name = str(sys.argv[0])
+    openlrw.mail_server(script_name + " error", str(e.message)) # Send an email with the details
+    exit()
+except BadRequestException:
+    OpenLRW.pretty_error("Bad Request", "Lorem ipsum")
 
+#5 Class
+try:
+    openlrw.post_class(json, jwt, True)
+except InternalServerErrorException as e:
+    script_name = str(sys.argv[0])
+    openlrw.mail_server(script_name + " error", str(e.message)) # Send an email with the details
+    exit()
+except BadRequestException:
+    OpenLRW.pretty_error("Bad Request", "Lorem ipsum")
+
+
+# 6. Result
+try: 
+    result = openlrw.post_result_for_a_class("classId", json, jwt, True)
+except ExpiredTokenException:
+  OpenLRW.pretty_error("Error", "JWT Expired")
+except InternalServerErrorException as e:
+    script_name = str(sys.argv[0])
+    openlrw.mail_server(script_name + " error", str(e.message)) # Send an email with the details
+    exit()
+except BadRequestException:
+    OpenLRW.pretty_error("Bad Request", "Lorem ipsum")
+
+  
+# 7. Send a Caliper statement
+try:
+   response_code = openlrw.send_caliper(statement)
+except BadRequestException as e:
+   print(str(e.message))
+   OpenLRW.pretty_error("Bad Request", "An error happened.")
+except InternalServerErrorException as e:
+   print(str(e.message))
+   OpenLRW.pretty_error("Internal Server Error", "An error happened.")
+   
+
+OpenLRW.pretty_message("Script finished", "Ask the features you want in the pull requests!")     
+   
+  
 ```
