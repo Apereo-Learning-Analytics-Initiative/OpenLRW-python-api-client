@@ -31,7 +31,7 @@ def readme():
 
 setup(
     name='openlrw',
-    version='1.0.0rc',
+    version='1.0.1rc',
     description='Client library for Apereo OpenLRW API',
     long_description=readme(),
     keywords='apereo openlrw api client',
