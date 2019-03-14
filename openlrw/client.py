@@ -96,6 +96,13 @@ class OpenLRW(object):
     #                    API CALLS                       #
     ######################################################
 
+
+    def oneroster_get(self, route, jwt):
+        return OneRoster.http_get(route, jwt)
+
+    def oneroster_post(self, route, data, jwt):
+        return OneRoster.http_post(route, jwt, data)
+
     def post_user(self, data, jwt, check):
         check = 'false' if check is False else 'true'
         return OneRoster.http_post(Routes.USERS + '?check=' + check, jwt, data)
@@ -131,6 +138,9 @@ class OpenLRW(object):
         check = 'false' if check is False else 'true'
         route = Routes.CLASSES + '/' + str(class_id) + '/results?check=' + check
         return OneRoster.http_post(route, jwt, data)
+
+    def get_results_for_a_user(self, user_id, jwt):
+        return OneRoster.http_get(Routes.USERS + '/' + user_id + '/results', jwt)
 
     def post_enrollment(self, class_id, data, jwt, check):
         check = 'false' if check is False else 'true'
