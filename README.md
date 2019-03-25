@@ -13,22 +13,64 @@
 
 ## Usage
 
-#### Some examples of what you can do
-
+### Import the library
+Add this import before using the next examples
 ```python
-
 from openlrw.client import OpenLRW
-from openlrw.exceptions import ExpiredTokenException
+from openlrw.exceptions import *
+```
 
-# 1. Settings
+### Setup the client
+```python
 openlrw = OpenLRW(uri, username, password) # Create an instance of the client
+openlrw.setup_email('localhost', 'script@openlrw.dev', 'your_email@domain.com')  # Optional: Allows you to send emails
+```
+### Create JSON Web Token
+```python
+jwt = openlrw.generate_jwt()
+```
+### Use OneRoster Routes
+There are two ways to call OneRoster routes: by using a generic call or use implemented methods
 
-openlrw.setup_email('localhost', 'script@openlrw.dev', 'your_email@domain.com') # Allows you to send emails
-
-# 2. Authentication
-jwt = openlrw.generate_jwt() # Generate a JSON Web Token for using OneRoster routes
-
-# 3. Users
+#### Generic methods
+```python
+# GET
+try: 
+  classes = openlrw.oneroster_get('/api/classes', jwt)
+except ExpiredTokenException:
+  print("Error: JWT Expired)
+  
+# POST
+try: 
+  openlrw.oneroster_post('/api/classes', data, jwt)
+except ExpiredTokenException:
+  print("Error: JWT Expired)
+except BadRequestException as e:
+  print("Error: " + str(e.message.content))
+except InternalServerErrorException as e:
+  print("Error: " + str(e.message.content))
+  
+  
+# PATCH
+try: 
+  openlrw.oneroster_patch('/api/ROUTE', data, jwt)
+except ExpiredTokenException:
+  print("Error: JWT Expired)
+except BadRequestException as e:
+  print("Error: " + str(e.message.content))
+except InternalServerErrorException as e:
+  print("Error: " + str(e.message.content))  
+  
+# DELETE
+try: 
+  openlrw.oneroster_DELETE('/api/ROUTE', jwt)
+except ExpiredTokenException:
+  print("Error: JWT Expired)
+ 
+```
+   #### Users
+   Get a user
+```python
 try: 
   user = openlrw.get_user(user_id, jwt) # One user
   users = openlrw.get_users(jwt) # All the users
@@ -37,9 +79,10 @@ try:
   delete_user_res = openlrw.delete_user(user_id, jwt)
 except ExpiredTokenException:
   OpenLRW.pretty_error("Error", "JWT Expired")
+```
 
-
-# 4. Line items
+   #### Line items
+```python
 try: 
     line_item = openlrw.get_lineitem("lineItemId", jwt)
     line_items = openlrw.get_lineitems(jwt)
@@ -53,8 +96,10 @@ except InternalServerErrorException as e:
     exit()
 except BadRequestException:
     OpenLRW.pretty_error("Bad Request", "Lorem ipsum")
+```
+  #### Class
 
-#5 Class
+```python
 try:
     openlrw.post_class(json, jwt, True)
 except InternalServerErrorException as e:
@@ -63,9 +108,11 @@ except InternalServerErrorException as e:
     exit()
 except BadRequestException:
     OpenLRW.pretty_error("Bad Request", "Lorem ipsum")
+```
 
+  #### Result
 
-# 6. Result
+```python
 try: 
     result = openlrw.post_result_for_a_class("classId", json, jwt, True)
 except ExpiredTokenException:
@@ -76,9 +123,10 @@ except InternalServerErrorException as e:
     exit()
 except BadRequestException:
     OpenLRW.pretty_error("Bad Request", "Lorem ipsum")
-
+```
   
-# 7. Send a Caliper statement
+  #### Send a Caliper statement
+```python
 try:
    response_code = openlrw.send_caliper(statement)
 except BadRequestException as e:
