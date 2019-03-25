@@ -27,7 +27,7 @@ from openlrw.routes import *
 __author__ = "Xavier Chopin"
 __copyright__ = "Copyright 2019"
 __license__ = "ECL-2.0"
-__version__ = "1.0.0"
+__version__ = "1.0.2"
 __email__ = "xavier.chopin@univ-lorraine.fr"
 __status__ = "Production"
 
@@ -59,6 +59,7 @@ class OpenLRW(object):
         self._mail = None
         self._from_mail = None
         self._to_mail = None
+        self._host_mail = None
 
     def __getattr__(self, name):
         def function(*args, **kwargs):
@@ -73,7 +74,7 @@ class OpenLRW(object):
         :param _from: email address
         :param to: email address
         """
-        self._mail = smtplib.SMTP(str(host))
+        self._host_mail = host
         self._from_mail = _from
         self._to_mail = to
 
@@ -89,7 +90,8 @@ class OpenLRW(object):
         :param message:
         :return:
         """
-        if self._mail:
+        if self._host_mail:
+            self._mail = smtplib.SMTP(str(self._host_mail_host))
             self._mail.sendmail(self._from_mail, self._to_mail, "Subject: " + subject + " \n\n" + message)
 
     ######################################################
@@ -134,10 +136,18 @@ class OpenLRW(object):
         route = Routes.CLASSES + '/' + str(class_id) + '/lineitems?check=' + check
         return OneRoster.http_post(route, jwt, data)
 
+    def post_class(self, data, jwt, check):
+        check = 'false' if check is False else 'true'
+        return OneRoster.http_post(Routes.CLASSES + '?check=' + check, jwt, data)
+
     def post_result_for_a_class(self, class_id, data, jwt, check):
         check = 'false' if check is False else 'true'
         route = Routes.CLASSES + '/' + str(class_id) + '/results?check=' + check
         return OneRoster.http_post(route, jwt, data)
+
+    def get_results(self, jwt):
+        return OneRoster.http_get(Routes.CLASSES, jwt)
+
 
     def get_results_for_a_user(self, user_id, jwt):
         return OneRoster.http_get(Routes.USERS + '/' + user_id + '/results', jwt)
@@ -147,9 +157,7 @@ class OpenLRW(object):
         route = Routes.CLASSES + '/' + str(class_id) + '/enrollments?check=' + check
         return OneRoster.http_post(route, jwt, data)
 
-    def post_class(self, data, jwt, check):
-        check = 'false' if check is False else 'true'
-        return OneRoster.http_post(Routes.CLASSES + '?check=' + check, jwt, data)
+
 
 
     # Events
