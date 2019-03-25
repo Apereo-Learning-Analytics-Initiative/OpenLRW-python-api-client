@@ -63,11 +63,12 @@ except InternalServerErrorException as e:
   
 # DELETE
 try: 
-  openlrw.oneroster_DELETE('/api/ROUTE', jwt)
+  openlrw.oneroster_delete('/api/ROUTE', jwt)
 except ExpiredTokenException:
   print("Error: JWT Expired)
  
 ```
+
    #### Users
    Get a user
 ```python
