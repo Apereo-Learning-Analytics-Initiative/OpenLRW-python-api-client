@@ -16,7 +16,7 @@
 __author__ = "Xavier Chopin"
 __copyright__ = "Copyright 2019"
 __license__ = "ECL-2.0"
-__version__ = "1"
+__version__ = "1.0.2"
 __email__ = "xavier.chopin@univ-lorraine.fr"
 __status__ = "Production"
 
@@ -31,7 +31,7 @@ def readme():
 
 setup(
     name='openlrw',
-    version='1.0.1rc',
+    version='1.0.2c',
     description='Client library for Apereo OpenLRW API',
     long_description=readme(),
     keywords='apereo openlrw api client',
