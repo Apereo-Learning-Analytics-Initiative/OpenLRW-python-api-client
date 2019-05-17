@@ -21,7 +21,7 @@ from openlrw.routes import Routes
 __author__ = "Xavier Chopin"
 __copyright__ = "Copyright 2019"
 __license__ = "ECL-2.0"
-__version__ = "1.0.1rc"
+__version__ = "1.0.3"
 __email__ = "xavier.chopin@univ-lorraine.fr"
 __status__ = "Production"
 
@@ -51,7 +51,7 @@ class OneRoster:
         return response.content
 
     @staticmethod
-    def http_post(route, jwt, data):
+    def http_post(route, data, jwt):
         """
         For OneRoster routes('/api/:route')
         :param route:
@@ -91,7 +91,7 @@ class OneRoster:
         return True
 
     @staticmethod
-    def http_patch(route, jwt, data):
+    def http_patch(route, data, jwt):
         """
         For OneRoster routes('/api/:route')
         :param route:
