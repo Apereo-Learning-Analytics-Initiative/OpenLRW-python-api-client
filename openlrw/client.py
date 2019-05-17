@@ -105,7 +105,7 @@ class OpenLRW(object):
         return OneRoster.http_post(route, data, jwt)
 
     def change_indicator(self, status, jwt):
-        return OneRoster.http_post(Routes.INDICATOR, status, jwt)
+        return OneRoster.http_post(Routes.INDICATOR, {'status': status}, jwt)
 
     def post_user(self, data, jwt, check):
         check = 'false' if check is False else 'true'
