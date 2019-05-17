@@ -16,7 +16,7 @@
 __author__ = "Xavier Chopin"
 __copyright__ = "Copyright 2019"
 __license__ = "ECL-2.0"
-__version__ = "1.0.2"
+__version__ = "1.0.3b"
 __email__ = "xavier.chopin@univ-lorraine.fr"
 __status__ = "Production"
 
@@ -24,16 +24,11 @@ import setuptools
 from distutils.core import setup
 
 
-def readme():
-    with open('README.md') as f:
-        return f.read()
-
-
 setup(
     name='openlrw',
-    version='1.0.2c2',
+    version='1.0.3c',
     description='Client library for Apereo OpenLRW API',
-    long_description=readme(),
+    long_description="Check the readme file on GitHub",
     keywords='apereo openlrw api client',
     url='https://github.com/Apereo-Learning-Analytics-Initiative/OpenLRW-python-api-client',
     author='Xavier Chopin',
@@ -50,6 +45,5 @@ setup(
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
-    ], 
-    install_requires=['requests']
+    ], install_requires=['requests']
 )
