@@ -27,7 +27,7 @@ from openlrw.routes import *
 __author__ = "Xavier Chopin"
 __copyright__ = "Copyright 2019"
 __license__ = "ECL-2.0"
-__version__ = "1.0.2"
+__version__ = "1.0.3"
 __email__ = "xavier.chopin@univ-lorraine.fr"
 __status__ = "Production"
 
@@ -98,16 +98,18 @@ class OpenLRW(object):
     #                    API CALLS                       #
     ######################################################
 
-
-    def oneroster_get(self, route, jwt):
+    def http_auth_get(self, route, jwt):
         return OneRoster.http_get(route, jwt)
 
-    def oneroster_post(self, route, data, jwt):
-        return OneRoster.http_post(route, jwt, data)
+    def http_auth_post(self, route, data, jwt):
+        return OneRoster.http_post(route, data, jwt)
+
+    def change_indicator(self, status, jwt):
+        return OneRoster.http_post(Routes.INDICATOR, status, jwt)
 
     def post_user(self, data, jwt, check):
         check = 'false' if check is False else 'true'
-        return OneRoster.http_post(Routes.USERS + '?check=' + check, jwt, data)
+        return OneRoster.http_post(Routes.USERS + '?check=' + check, data, jwt)
 
     def delete_user(self, user_id, jwt):
         return OneRoster.http_delete(Routes.USERS + '/' + user_id, jwt)
@@ -119,7 +121,7 @@ class OpenLRW(object):
         return OneRoster.http_get(Routes.USERS, jwt)
 
     def patch_user(self, user_id, data, jwt):
-        return OneRoster.http_patch(Routes.USERS + '/' + user_id, jwt, data)
+        return OneRoster.http_patch(Routes.USERS + '/' + user_id, data, jwt)
 
     def get_lineitem(self, id, jwt):
         return OneRoster.http_get(Routes.LINE_ITEMS + '/' + id, jwt)
@@ -129,25 +131,24 @@ class OpenLRW(object):
 
     def post_lineitem(self, data, jwt, check):
         check = 'false' if check is False else 'true'
-        return OneRoster.http_post(Routes.LINE_ITEMS + '?check=' + check, jwt, data)
+        return OneRoster.http_post(Routes.LINE_ITEMS + '?check=' + check, data, jwt)
 
     def post_lineitem_for_a_class(self, class_id, data, jwt, check):
         check = 'false' if check is False else 'true'
         route = Routes.CLASSES + '/' + str(class_id) + '/lineitems?check=' + check
-        return OneRoster.http_post(route, jwt, data)
+        return OneRoster.http_post(route, data, jwt)
 
     def post_class(self, data, jwt, check):
         check = 'false' if check is False else 'true'
-        return OneRoster.http_post(Routes.CLASSES + '?check=' + check, jwt, data)
+        return OneRoster.http_post(Routes.CLASSES + '?check=' + check, data, jwt)
 
     def post_result_for_a_class(self, class_id, data, jwt, check):
         check = 'false' if check is False else 'true'
         route = Routes.CLASSES + '/' + str(class_id) + '/results?check=' + check
-        return OneRoster.http_post(route, jwt, data)
+        return OneRoster.http_post(route, data, jwt)
 
     def get_results(self, jwt):
         return OneRoster.http_get(Routes.CLASSES, jwt)
-
 
     def get_results_for_a_user(self, user_id, jwt):
         return OneRoster.http_get(Routes.USERS + '/' + user_id + '/results', jwt)
@@ -155,10 +156,7 @@ class OpenLRW(object):
     def post_enrollment(self, class_id, data, jwt, check):
         check = 'false' if check is False else 'true'
         route = Routes.CLASSES + '/' + str(class_id) + '/enrollments?check=' + check
-        return OneRoster.http_post(route, jwt, data)
-
-
-
+        return OneRoster.http_post(route, data, jwt)
 
     # Events
 
