@@ -17,7 +17,7 @@
 __author__ = "Xavier Chopin"
 __copyright__ = "Copyright 2019"
 __license__ = "ECL-2.0"
-__version__ = "1.0.0"
+__version__ = "1.0.3"
 __email__ = "xavier.chopin@univ-lorraine.fr"
 __status__ = "Production"
 
@@ -35,6 +35,7 @@ class Routes:
     ENROLLMENTS = '/api/enrollments'
     LINE_ITEMS = '/api/lineitems'
     RISK = '/api/risk'
+    INDICATOR = '/api/indicator/custom'
     KEY_CALIPER = '/key/caliper'
 
     @staticmethod
