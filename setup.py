@@ -16,7 +16,7 @@
 __author__ = "Xavier Chopin"
 __copyright__ = "Copyright 2019"
 __license__ = "ECL-2.0"
-__version__ = "1.0.4"
+__version__ = "1.0.4a"
 __email__ = "xavier.chopin@univ-lorraine.fr"
 __status__ = "Production"
 
@@ -26,7 +26,7 @@ from distutils.core import setup
 
 setup(
     name='openlrw',
-    version='1.0.4',
+    version='1.0.4a',
     description='Client library for Apereo OpenLRW API',
     long_description="Check the readme file on GitHub",
     keywords='apereo openlrw api client',
