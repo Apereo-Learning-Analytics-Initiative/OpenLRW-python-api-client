@@ -8,6 +8,10 @@
   <a href="https://badge.fury.io/py/openlrw"><img src="https://badge.fury.io/py/openlrw.svg" alt="PyPI version"></a>
 </p>
 
+
+### BETA VERSION - IT WILL EVOLVE SOON IN OOP
+
+
 ## Getting Started
 ` pip install openlrw `
 
