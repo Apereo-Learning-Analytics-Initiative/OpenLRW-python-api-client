@@ -27,7 +27,7 @@ from openlrw.routes import *
 __author__ = "Xavier Chopin"
 __copyright__ = "Copyright 2019"
 __license__ = "ECL-2.0"
-__version__ = "1.0.3"
+__version__ = "1.0.4a"
 __email__ = "xavier.chopin@univ-lorraine.fr"
 __status__ = "Production"
 
@@ -157,6 +157,15 @@ class OpenLRW(object):
         check = 'false' if check is False else 'true'
         route = Routes.CLASSES + '/' + str(class_id) + '/enrollments?check=' + check
         return OneRoster.http_post(route, data, jwt)
+
+    def delete_enrollment(self, enrollment_id, jwt):
+        return OneRoster.http_delete(Routes.ENROLLMENTS + '/' + enrollment_id, jwt)
+
+    def delete_enrollments(self, jwt):
+        return OneRoster.http_delete(Routes.ENROLLMENTS, jwt)
+
+    def delete_classes(self, jwt):
+        return OneRoster.http_delete(Routes.CLASSES, jwt)
 
     # Events
 
