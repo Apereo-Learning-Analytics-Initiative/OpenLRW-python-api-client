@@ -40,13 +40,13 @@ There are two ways to call OneRoster routes: by using a generic call or use impl
 ```python
 # GET
 try: 
-  classes = openlrw.oneroster_get('/api/classes', jwt)
+  classes = openlrw.http_auth_get('/api/classes', jwt)
 except ExpiredTokenException:
   print("Error: JWT Expired)
   
 # POST
 try: 
-  openlrw.oneroster_post('/api/classes', data, jwt)
+  openlrw.http_auth_post('/api/classes', data, jwt)
 except ExpiredTokenException:
   print("Error: JWT Expired)
 except BadRequestException as e:
@@ -54,22 +54,6 @@ except BadRequestException as e:
 except InternalServerErrorException as e:
   print("Error: " + str(e.message.content))
   
-  
-# PATCH
-try: 
-  openlrw.oneroster_patch('/api/ROUTE', data, jwt)
-except ExpiredTokenException:
-  print("Error: JWT Expired)
-except BadRequestException as e:
-  print("Error: " + str(e.message.content))
-except InternalServerErrorException as e:
-  print("Error: " + str(e.message.content))  
-  
-# DELETE
-try: 
-  openlrw.oneroster_delete('/api/ROUTE', jwt)
-except ExpiredTokenException:
-  print("Error: JWT Expired)
  
 ```
 
