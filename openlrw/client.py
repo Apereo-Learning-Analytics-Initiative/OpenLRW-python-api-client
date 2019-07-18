@@ -44,20 +44,19 @@ class OpenLRW(object):
     """
 
     URI = ""
-
     parser = argparse.ArgumentParser()
-    parser.add_argument('--verbose', action='store_true', help='Print all the HTTP calls')
+    parser.add_argument('-v', '--verbose', action='store_true', help='Print all the HTTP calls')
     parser.add_argument('--no-mail', action='store_true', help='Disable the email server')
-    options = parser.parse_args()
+    options = None  # Enabled after to avoid conflicts
 
-    def __init__(self, url, username, password):
+    def __init__(self, url, username, password, argparse=True):
         """
         Constructor
 
         :param url: OpenLRW URI Endpoint
         :param key: API key
         :param password: API Password
-        :param auth_header: API HTTP header
+        :param argparse: boolean: to start the parsing, it allows to add your own arguments in your scripts
         """
         OpenLRW.URI = url
         self._username = username
@@ -66,6 +65,13 @@ class OpenLRW(object):
         self._from_mail = None
         self._to_mail = None
         self._host_mail = None
+
+        if argparse is True:
+            OpenLRW.options = OpenLRW.parser.parse_args()
+
+    @staticmethod
+    def enable_argparse():
+            OpenLRW.options = OpenLRW.parser.parse_args()
 
     def __getattr__(self, name):
         def function(*args, **kwargs):
