@@ -9,7 +9,7 @@
 </p>
 
 
-### BETA VERSION - IT WILL EVOLVE SOON IN OOP
+### BETA VERSION 
 
 
 ## Getting Started
