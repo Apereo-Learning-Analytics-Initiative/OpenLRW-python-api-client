@@ -19,6 +19,7 @@ import requests
 import json
 import sys
 import base64
+import argparse
 
 from openlrw.oneroster import OneRoster
 from openlrw.exceptions import *
@@ -43,6 +44,11 @@ class OpenLRW(object):
     """
 
     URI = ""
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--verbose', action='store_true', help='Print all the HTTP calls')
+    parser.add_argument('--no-mail', action='store_true', help='Disable the email server')
+    options = parser.parse_args()
 
     def __init__(self, url, username, password):
         """
@@ -90,7 +96,8 @@ class OpenLRW(object):
         :param message:
         :return:
         """
-        if self._host_mail:
+
+        if self._host_mail and not self.options.nomail:
             self._mail = smtplib.SMTP(str(self._host_mail))
             self._mail.sendmail(self._from_mail, self._to_mail, "Subject: " + subject + " \n\n" + message)
 
@@ -214,10 +221,10 @@ class OpenLRW(object):
         """
         headers = {'X-Requested-With': 'XMLHttpRequest'}
         data = {"username": self._username, "password": self._password}
-        print(OpenLRW.URI)
         try:
             response = requests.post(OpenLRW.URI + Routes.AUTH, headers=headers, json=data)
-            Routes.print_post(self.URI + Routes.AUTH, response)
+            if self.options.verbose:
+                Routes.print_post(self.URI + Routes.AUTH, response)
             res = response.json()
             return res['token']
         except requests.RequestException:

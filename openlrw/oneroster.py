@@ -41,7 +41,8 @@ class OneRoster:
         """
         from openlrw.client import OpenLRW
         response = requests.get(str(OpenLRW.URI + route), headers={'X-Requested-With': 'XMLHttpRequest', 'Authorization': 'Bearer ' + str(jwt)})
-        Routes.print_get(route, response)
+        if OpenLRW.options.verbose:
+            Routes.print_get(route, response)
 
         if response.status_code == 401:
             raise ExpiredTokenException
@@ -61,7 +62,9 @@ class OneRoster:
         """
         from openlrw.client import OpenLRW
         response = requests.post(str(OpenLRW.URI + route), headers={'X-Requested-With': 'XMLHttpRequest', 'Authorization': 'Bearer ' + str(jwt)}, json=data)
-        Routes.print_post(route, response)
+
+        if OpenLRW.options.verbose:
+            Routes.print_post(route, response)
 
         if response.status_code == 401:
             raise ExpiredTokenException
@@ -82,7 +85,10 @@ class OneRoster:
         """
         from openlrw.client import OpenLRW
         response = requests.delete(str(OpenLRW.URI + route), headers={'X-Requested-With': 'XMLHttpRequest', 'Authorization': 'Bearer ' + str(jwt)})
-        Routes.print_delete(route, response)
+
+        if OpenLRW.options.verbose:
+            Routes.print_delete(route, response)
+
         if response.status_code == 401:
             raise ExpiredTokenException(response)
         elif response.status_code == 500:
@@ -101,7 +107,9 @@ class OneRoster:
         """
         from openlrw.client import OpenLRW
         response = requests.patch(str(OpenLRW.URI + route), headers={'X-Requested-With': 'XMLHttpRequest', 'Authorization': 'Bearer ' + str(jwt)}, json=data)
-        Routes.print_patch(route, response)
+        if OpenLRW.options.verbose:
+            Routes.print_patch(route, response)
+
         if response.status_code == 401:
             raise ExpiredTokenException
         elif response.status_code == 400:
