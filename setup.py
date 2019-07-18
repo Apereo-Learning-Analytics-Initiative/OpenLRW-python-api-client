@@ -26,7 +26,7 @@ from distutils.core import setup
 
 setup(
     name='openlrw',
-    version='1.0.7',
+    version='1.0.8',
     description='Client library for Apereo OpenLRW API',
     long_description="Check the readme file on GitHub",
     keywords='apereo openlrw api client',
