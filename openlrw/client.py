@@ -97,7 +97,7 @@ class OpenLRW(object):
         :return:
         """
 
-        if self._host_mail and not self.options.nomail:
+        if self._host_mail and not self.options.no_mail:
             self._mail = smtplib.SMTP(str(self._host_mail))
             self._mail.sendmail(self._from_mail, self._to_mail, "Subject: " + subject + " \n\n" + message)
 
