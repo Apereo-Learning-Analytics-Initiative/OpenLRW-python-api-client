@@ -71,7 +71,12 @@ class OpenLRW(object):
 
     @staticmethod
     def enable_argparse():
-            OpenLRW.options = OpenLRW.parser.parse_args()
+        OpenLRW.options = OpenLRW.parser.parse_args()
+        return OpenLRW.options
+
+    @staticmethod
+    def get_parser_result():
+        return OpenLRW.options
 
     def __getattr__(self, name):
         def function(*args, **kwargs):
